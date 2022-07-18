@@ -1,1 +1,21 @@
-## zcrapper
+# zcrapper
+
+Brograma para descargar archivos de la página.
+
+### Uso
+1) Descargar el binario que corresponde a tu sistema operativo en la página de releases de github.
+2) La primera vez que el programa corra, pedirá ingresar la cookie de acceso. Esto pasa porque Mordekai tiene el muro activado y si no está esa cookie, la página devuelve el screen de Chocamo.\
+
+***
+##### Guía para agregar la cookie
+- en tu navegador web, en la página de rouzed apretar **F12** para ingresar a las herramientas de desarrollo.
+- buscar la pestaña '*Storage*' o '*Almacenamiento*'
+- buscar la cookie de nombre *.AspNetCore.Identity.Application*
+- en la columna '*value*' o '*valor*', dar doble click y luego Ctrl+C para pegar el valor
+***
+3) Pega el id del rouz. Si la URL es: `https://rouzed.one/Hilo/07TOQ14MNBNI9Z1U1QHP`
+entonces el id es `07TOQ14MNBNI9Z1U1QHP`
+4) lito
+
+
+El programa usa este otro [repo](https://github.com/anongolico/base). Si deseas modificar algo, es mejor clonar ambos. También con ese es posible modificar algunos parámetros para hacer un scrapper para otros clones.
