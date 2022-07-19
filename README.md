@@ -3,7 +3,7 @@
 Brograma para descargar archivos de la página.
 
 ### Uso
-1) Descargar el binario que corresponde a tu sistema operativo en la página de releases de github.
+1) Descargar el binario que corresponde a tu sistema operativo en la página de [releases](https://github.com/anongolico/zcrapper/releases) de github.
 2) La primera vez que el programa corra, pedirá ingresar la cookie de acceso. Esto pasa porque Mordekai tiene el muro activado y si no está esa cookie, la página devuelve el screen de Chocamo.\
 
 ![el op](https://github.com/anongolico/zcrapper/blob/main/img/opegolico.gif?raw=true "OP")
