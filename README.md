@@ -19,5 +19,8 @@ Brograma para descargar archivos de la página.
 entonces el id es `07TOQ14MNBNI9Z1U1QHP`
 4) lito
 
+#### Aclaración para usuarios de windowns
+
+si al hacer doble click sobre el ejecutable, no funciona, lo único que hay que hacer es correrlo desde la terminal directamente. Para hacerlo, en el menú de inicio buscar *cmd*, luego arrastrar la carpeta donde está el ejecutable (o navegar hasta ella con el comando *chdir*). Una vez ahí, escribir zcrapper.exe y lito.
 
 El programa usa este otro [repo](https://github.com/anongolico/base). Si deseas modificar algo, es mejor clonar ambos. También con ese es posible modificar algunos parámetros para hacer un scrapper para otros clones.
