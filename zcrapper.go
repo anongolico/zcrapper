@@ -9,19 +9,26 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
+	"time"
 )
 
 var (
 	mediaUrl             = base.BaseMediaUrl
 	FormatsToDownload    []string
 	TotalFilesToDownload int
+	Id                   string
 )
+
+const MaxParallelDownloads = 50
 
 // createRouzFolder creates a new folder to store media
 func createRouzFolder(name string) {
 	// algunos dawns ponen el slash en el nombre del roz y
 	// eso genera error si el SO es linux
 	name = strings.ReplaceAll(name, "/", "")
+	name = strings.TrimSpace(name)
+	name = strings.ReplaceAll(name, " ", "_")
 	_, err := os.Stat(name)
 	if os.IsNotExist(err) {
 		err = os.Mkdir(name, 0755)
@@ -30,23 +37,33 @@ func createRouzFolder(name string) {
 }
 
 func downloadFiles(r *base.Rouz) {
-	folderName := fmt.Sprintf("%s (%s)", r.Hilo.Titulo, r.Hilo.Id)
+	folderName := fmt.Sprintf("%s_%s", r.Hilo.Id, r.Hilo.Titulo)
 	createRouzFolder(folderName)
 	err := os.Chdir(folderName)
 	base.Handle(err, "")
 
-	err = downloadFile(r.Hilo.Media.Url)
+	// channel para descargas en paralelo
+	openConns := make(chan int, MaxParallelDownloads)
+	var wg sync.WaitGroup
+
+	// err = downloadFile(r.Hilo.Media.Url)
 
 	for _, v := range FormatsToDownload {
 		createRouzFolder(v)
 		err = os.Chdir(v)
 		base.Handle(err, "")
-		for _, x := range base.Formats[v] {
-			err = downloadFile(x)
-			base.Handle(err, "error al descargar archivo")
-			TotalFilesToDownload--
-			log.Printf("%d restantes.\n", TotalFilesToDownload+1)
+
+		for i, x := range base.Formats[v] {
+			openConns <- 1
+			wg.Add(1)
+			// fmt.Printf("Sending file %d with URL %s\n", i, x)
+			// go func() {
+			go downloadFile(x, openConns, &wg, i)
+			// base.Handle(err, "error al descargar archivo")
+
+			// }()
 		}
+		wg.Wait()
 		err = os.Chdir("..")
 		base.Handle(err, "")
 	}
@@ -55,31 +72,40 @@ func downloadFiles(r *base.Rouz) {
 	base.Handle(err, "")
 }
 
-func downloadFile(url string) error {
+func downloadFile(url string, c chan int, wg *sync.WaitGroup, index int) {
 
+	defer wg.Done()
 	_, err := os.Stat(url)
 	if !os.IsNotExist(err) {
-		fmt.Printf("%s ya exite, omitiendo descarga\n", url)
-		return nil
+		TotalFilesToDownload--
+		log.Printf("%s ya exite, omitiendo descarga (%d restantes)\n", url, TotalFilesToDownload)
+		return
 	}
-	// Get the data
-	resp, err := http.Get(mediaUrl + url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
 	// Create the file
 	out, err := os.Create(url)
 	if err != nil {
-		return err
+		return
 	}
 	defer out.Close()
+
+	// Get the data
+	resp, err := http.Get(mediaUrl + url)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
 	// Write the body to file
 	_, err = io.Copy(out, resp.Body)
-	return err
+	<-c
+
+	TotalFilesToDownload--
+	log.Printf("%d restantes\n", TotalFilesToDownload+1)
 }
 
-func listFormats() {
+// promptUser() asks the anon the proper questions
+// to start the download process.
+func promptUser() {
 	f := make([]string, len(base.Formats))
 	i := 0
 	for k := range base.Formats {
@@ -89,6 +115,11 @@ func listFormats() {
 
 	q := []*survey.Question{
 		{
+			Name:     "id",
+			Prompt:   &survey.Input{Message: "Ingresa el ID del rouz:"},
+			Validate: survey.Required,
+		},
+		{
 			Name: "formats",
 			Prompt: &survey.MultiSelect{
 				Message: "Escoge los formatos a descargar:",
@@ -97,16 +128,26 @@ func listFormats() {
 			Validate: survey.Required,
 		},
 	}
-	_ = survey.Ask(q, &FormatsToDownload)
+
+	answers := struct {
+		id      string   `survey:"id"`      // or you can tag fields to match a specific name
+		formats []string `survey:"formats"` // if the types don't match, survey will convert it
+	}{
+		Id,
+		FormatsToDownload,
+	}
+
+	_ = survey.Ask(q, &answers)
 }
 
 func main() {
 	base.ReadAuthFile()
 
 	var id string
+
 	questions := []*survey.Question{
 		{
-			Name:     "rouz",
+			Name:     "id",
 			Prompt:   &survey.Input{Message: "Ingresa el ID del rouz:"},
 			Validate: survey.Required,
 		},
@@ -115,7 +156,9 @@ func main() {
 	r := base.New(id)
 	_ = base.ScanFormats(r)
 
-	listFormats()
+	promptUser()
+
+	timestamp := time.Now()
 
 	for _, v := range FormatsToDownload {
 		TotalFilesToDownload += len(base.Formats[v])
@@ -124,5 +167,5 @@ func main() {
 	log.Printf("%d archivos para descargar. Puede tomar un tiempo.", TotalFilesToDownload+1)
 
 	downloadFiles(r)
-	log.Println("Hasta la prótsimaaaa")
+	log.Printf("Hasta la prótsimaaaa (%v)", time.Since(timestamp))
 }
