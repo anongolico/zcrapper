@@ -28,7 +28,7 @@ func downloadFile(path string) error {
 	localFolder := AbsMainDirectoryPath + "/" + folder
 	fileName := localFolder + "/" + url
 
-	_, err := os.Stat(url)
+	_, err := os.Stat(fileName)
 	if !os.IsNotExist(err) {
 		fmt.Printf("%s ya exite, omitiendo descarga\n", url)
 		return nil
@@ -40,7 +40,6 @@ func downloadFile(path string) error {
 	}
 	defer resp.Body.Close()
 	// Create the file
-	err = os.Chdir(localFolder)
 	out, err := os.Create(fileName)
 	if err != nil {
 		return err
@@ -67,9 +66,11 @@ func Laburante(jobs <-chan string, wg *sync.WaitGroup) {
 
 func downloadFiles(r *base.Rouz) {
 
-	mainDirectory := r.Hilo.Id
-	createDirectory(mainDirectory)
-	err := os.Chdir(mainDirectory)
+	title := fmt.Sprintf("%s (%s)", r.Hilo.Titulo, r.Hilo.Id)
+	title = strings.ReplaceAll(title, "/", "")
+	title = strings.TrimSpace(title)
+	createDirectory(title)
+	err := os.Chdir(title)
 	base.Handle(err, "Imposible entrar a la carpeta del roz, badre\n>hide")
 
 	AbsMainDirectoryPath, _ = filepath.Abs(".")

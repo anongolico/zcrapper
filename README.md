@@ -10,7 +10,7 @@ Brograma para descargar archivos de la página.
 ***
 ##### Guía para agregar la cookie
 - en tu navegador web, en la página de rouzed apretar **F12** para ingresar a las herramientas de desarrollo.
-- buscar la pestaña '*Storage*' o '*Almacenamiento*'
+- buscar la pestaña '*Storage*' o '*Almacenamiento*' ('*Aplicación*' si es un navegador basado en Chromium, como Brave, Opera, etc).
 - buscar la cookie de nombre *.AspNetCore.Identity.Application*
 - en la columna '*value*' o '*valor*', dar doble click y luego Ctrl+C para pegar el valor
 ![](https://raw.githubusercontent.com/anongolico/zcrapper/main/img/2.png "instrucciones")
