@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 )
@@ -16,11 +17,25 @@ import (
 var (
 	AbsMainDirectoryPath string
 	FilePathSeparator    string
+	AllowedChars         = `[\p{L}\p{N} .,¡!()]`
 )
 
 const (
 	Separator = "|"
 )
+
+func SanitizeString(s string) string {
+	var altString string
+
+	r := []rune(s)
+	for i := 0; i < len(r); i++ {
+		if ok, _ := regexp.MatchString(AllowedChars, string(r[i])); ok {
+			altString += string(r[i])
+		}
+	}
+
+	return altString
+}
 
 func downloadFile(path string) error {
 	values := strings.Split(path, Separator)
@@ -71,11 +86,10 @@ func Worker(jobs <-chan string, wg *sync.WaitGroup) {
 }
 
 func DownloadFiles(post *schemas.Post, formats map[string][]string) {
-
 	title := fmt.Sprintf("%s (%s)", post.Hilo.Titulo, post.Hilo.Id)
-	title = strings.ReplaceAll(title, "/", "")
-	title = strings.ReplaceAll(title, FilePathSeparator, "")
+	title = SanitizeString(title)
 	title = strings.TrimSpace(title)
+
 	createDirectory(title)
 	err := os.Chdir(title)
 	if err != nil {
