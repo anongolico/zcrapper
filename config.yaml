@@ -1,0 +1,11 @@
+---
+ CookieName: ".AspNetCore.Identity.Application"
+ CookieValue: ""
+
+ MainUrl: "https://boxed.fun/Hilo/"
+ MediaUrl: "https://boxed.fun/Media/"
+
+ # Size of the buffer used to read the post's body
+ BufferSize: 4194304
+ # Number of downloads to be queued at the same time
+ MaxParallelDownloads: 60
