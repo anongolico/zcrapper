@@ -5,7 +5,7 @@ Brograma para descargar archivos de la página.
 ### Uso
 1) Descargar el binario que corresponde a tu sistema operativo en la página de [releases](https://github.com/anongolico/zcrapper/releases) de github.
 2) En Windows, dar doble click sobre el binario (si así no funciona, ver las instrucciones más abajo). En Linux, en una terminal dentro del directorio que lo contiene, correr ./zcrapper (en caso de que no esté marcado como ejecutable, mandar un chmod +x zcrapper)
-3) Pega el id del rouz. Si la URL es: `https://rouzed.one/Hilo/07TOQ14MNBNI9Z1U1QHP`
+3) Pega el id del rouz. Si la URL es: `https://boxed.fun/Hilo/07TOQ14MNBNI9Z1U1QHP`
 entonces el id es `07TOQ14MNBNI9Z1U1QHP`
 4) lito
 
