@@ -1,3 +1,7 @@
+Estamos en otra guerra entre clones. Boxed fue una carnada y no duró ni una semana. Ahora algunos gordos se reúnen en temti, otros en ufftopia y otros en Dloow. como el pueblo judío, estamos en una peregrinación eterna, rodando de antro en antro como buenos gordubis. Si en algún momento otro clon termina ganando, lo pondré por aquí para los anons que siguen vagando sin rumbo fijo.
+
+Shalom.
+
 # zcrapper
 
 Brograma para descargar archivos de la página.
